@@ -7,7 +7,7 @@ namespace BowlingLib.Domain
         private BowlingGame()
         {
             Id = Guid.NewGuid();
-            Players = new List<Player>();
+            PlayerName = string.Empty;
         }
 
         public static BowlingGame Create()
@@ -15,22 +15,25 @@ namespace BowlingLib.Domain
             return new BowlingGame();
         }
 
-        public void AddPlayer(Player player)
+        public void AddPlayerName(string playerName)
         {
-            if (Players.Count == 8)
-                throw new InvalidOperationException(ValidationRuleTextTemplates.MaxPlayersAddedRuleText);
+            if (string.IsNullOrWhiteSpace(playerName))
+                throw new InvalidOperationException(ValidationRuleTextTemplates.EmptyPlayerNameNotAllowedRuleText);
+            if (playerName.Length > 20)
+                throw new InvalidOperationException(ValidationRuleTextTemplates.MaxPlayerNameLengthRuleText);
 
-            Players.Add(player);
+            PlayerName = playerName;
         }
 
-        public List<string> GetScoreLines()
+        public string GetScoreBoard()
         {
-            if (Players.Count == 0) return new List<string>{ "No players added to the game." };
+            if (PlayerName == string.Empty)
+                throw new InvalidOperationException(ValidationRuleTextTemplates.NoPlayerNameAddedRuleText);
 
-            return Players.Select(player => $"{player.Name}: 0").ToList();
+            return $"{PlayerName}: 0";
         }
 
         public Guid Id { get; }
-        public List<Player> Players { get; }
+        public string PlayerName { get; private set; }
     }
 }
