@@ -34,6 +34,20 @@ namespace BowlingLibTests.UnitTests.Domain
         }
 
         [Test]
+        public void PrintScore_When8PlayersAreAdded_ShouldReturn8Scorelines()
+        {
+            // Arrange
+            var bowlingGame = BowlingGame.Create();
+            AddXNumberOfPlayersToGame(bowlingGame, 8);
+
+            // Act
+            var result = bowlingGame.GetScoreLines();
+
+            // Assert
+            result.Count.Should().Be(8);
+        }
+
+        [Test]
         public void AddPlayer_WhenPlayer9IsAdded_ShouldThrow()
         {
             // Arrange
@@ -53,8 +67,6 @@ namespace BowlingLibTests.UnitTests.Domain
         [TestCase(null)]
         public void AddPlayer_WhenPlayerNameIsEmpty_ShouldThrow(string? name)
         {
-            // Arrange
-
             // Act
             Action act = () => Player.Create(name);
 
