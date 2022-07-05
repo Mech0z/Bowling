@@ -10,5 +10,8 @@
         // Frame
         public static string ImpossibleNumberOfPinsKnockedOverRuleText => "Too many pins knocked over";
         public static string FrameIsFinishedRuleText => "Cant add shots when frame is already finished";
+        public static string FrameCountMustBe10RuleText => "Frame count must have total of 10";
+        public static string CanOnlyAddFramesOnceRuleText => "Can only add frames to a frame once";
+        public static string CantRequestNextFrameFromLastFrameRuleText => "Cant request next frame from last frame";
     }
 }
