@@ -85,7 +85,7 @@ namespace BowlingLibTests.UnitTests.Domain
         [TestCase(0, 10, 20)]
         [TestCase(1, 5, 21)]
         [TestCase(8, 2, 28)]
-        public void Points_WhenRollingAStrikeAndThenAnotherStrike_ShouldReturnExpectedValue(int firstRollForNextNextFrame, int secondRollForNextNextFrame, int? expectedPoints)
+        public void Points_WhenRolling2Strikes_ShouldReturnExpectedValue(int firstRollForNextNextFrame, int secondRollForNextNextFrame, int? expectedPoints)
         {
             // Arrange
             var frame = CreateFrameWith10Frames();
@@ -117,9 +117,9 @@ namespace BowlingLibTests.UnitTests.Domain
             frame.Points.Should().Be(30);
         }
 
-        [TestCase(2, 9, false, "11 points total is not allowed")]
-        [TestCase(11, 1, false, "11 points in one shot is not possible")]
-        public void Frame_WhenShooting_ShouldThrowInvalidNumberOfPinsAreKnockedOver(int throw1, int throw2, bool expected, string reasonText)
+        [TestCase(2, 9, "11 points total is not allowed")]
+        [TestCase(11, 1, "11 points in one shot is not possible")]
+        public void Frame_WhenShooting_ShouldThrowInvalidNumberOfPinsAreKnockedOver(int firstRoll, int secondRoll, string reasonText)
         {
             // Arrange
             var frame = Frame.Create();
@@ -127,13 +127,14 @@ namespace BowlingLibTests.UnitTests.Domain
             // Act
             Action act = () =>
             {
-                frame.AddShot(throw1);
-                frame.AddShot(throw2);
+                frame.AddShot(firstRoll);
+                frame.AddShot(secondRoll);
             };
 
             // Assert
 
-            act.Should().Throw<InvalidOperationException>().WithMessage(ValidationRuleTextTemplates.ImpossibleNumberOfPinsKnockedOverRuleText);
+            act.Should().Throw<InvalidOperationException>()
+                .WithMessage(ValidationRuleTextTemplates.ImpossibleNumberOfPinsKnockedOverRuleText, reasonText);
         }
 
         [Test]
