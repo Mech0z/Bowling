@@ -1,7 +1,7 @@
 # Mech0z's bowling lib
 
-##
-This project is created as class library and act as an bowling engine.
+## Design decisions
+The project is created as class library to act as an bowling engine.
 
 DDD is used with BowlingGame being the aggregate root.
 
