@@ -4,10 +4,11 @@ namespace BowlingLib.Domain
 {
     public class Frame
     {
-        private Frame()
+        private Frame(bool bonusFrame = false)
         {
             PinsKnockedOver = new List<int>();
             AllFrames = new List<Frame>();
+            BonusFrame = bonusFrame;
         }
 
         public static Frame Create()
@@ -15,13 +16,21 @@ namespace BowlingLib.Domain
             return new Frame();
         }
 
+        public static Frame CreateBonusFrame()
+        {
+            return new Frame(true);
+        }
+
         public void AddAllFrames(List<Frame> frames)
         {
-            if (frames.Count != 10)
-                throw new InvalidOperationException(ValidationRuleTextTemplates.FrameCountMustBe10RuleText);
+            if (frames.Count != 12)
+                throw new InvalidOperationException(ValidationRuleTextTemplates.FrameCountMustBe12RuleText);
 
             if (AllFrames.Any())
                 throw new InvalidOperationException(ValidationRuleTextTemplates.CanOnlyAddFramesOnceRuleText);
+
+            if(frames.Count(x => x.BonusFrame == false) != 10 && frames.Count(x => x.BonusFrame) != 2)
+                throw new InvalidOperationException(ValidationRuleTextTemplates.InvalidFrameCombination);
 
             AllFrames.AddRange(frames);
         }
@@ -38,17 +47,19 @@ namespace BowlingLib.Domain
             PinsKnockedOver.Add(pinsKnockedOver);
         }
 
+        public List<Frame> AllFrames { get; }
+
         public List<int> PinsKnockedOver { get; }
+        
+        public bool BonusFrame { get; }
 
         public int? Points
         {
             get
             {
-                if (IsLastFrame)
-                {
-                    return CalculatePointsForLastFrame();
-                }
-
+                if (BonusFrame)
+                    return null;
+                
                 if (IsStrike)
                 {
                     return CalculatePointsForStrike();
@@ -64,11 +75,6 @@ namespace BowlingLib.Domain
 
                 return  null;
             }
-        }
-
-        private int? CalculatePointsForLastFrame()
-        {
-            throw new NotImplementedException();
         }
 
         private int? CalculatePointsForSpare()
@@ -102,16 +108,14 @@ namespace BowlingLib.Domain
         public bool IsStrike => PinsKnockedOver.Any() && PinsKnockedOver.First() == 10;
 
         public bool IsSpare => PinsKnockedOver.Count == 2 && PinsKnockedOver.Sum() == 10;
-
-        public List<Frame> AllFrames { get; }
-
-        public bool IsLastFrame => AllFrames.IndexOf(this) == 9;
+        
+        private bool SecondBonusFrameIndex => AllFrames.IndexOf(this) == 11;
 
         public Frame NextFrame
         {
             get
             {
-                if (IsLastFrame)
+                if (SecondBonusFrameIndex)
                     throw new InvalidOperationException(ValidationRuleTextTemplates.CantRequestNextFrameFromLastFrameRuleText);
                 return AllFrames[AllFrames.IndexOf(this) + 1];
             }

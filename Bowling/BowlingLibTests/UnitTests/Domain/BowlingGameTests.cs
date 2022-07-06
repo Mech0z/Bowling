@@ -42,7 +42,7 @@ namespace BowlingLibTests.UnitTests.Domain
             var bowlingGame = BowlingGame.Create();
 
             // Act
-            Action act = () => bowlingGame.AddPlayerName(name);
+            Action act = () => bowlingGame.AddPlayerName(name!);
 
             // Assert
             act.Should().Throw<InvalidOperationException>().WithMessage(ValidationRuleTextTemplates.EmptyPlayerNameNotAllowedRuleText);
@@ -59,6 +59,73 @@ namespace BowlingLibTests.UnitTests.Domain
 
             // Assert
             act.Should().Throw<InvalidOperationException>().WithMessage(ValidationRuleTextTemplates.MaxPlayerNameLengthRuleText);
+        }
+
+        [Test]
+        public void FullGame_WhenRollingSampleGame_ShouldGive133Points()
+        {
+            // Arrange
+            var bowlingGame = BowlingGame.Create();
+            bowlingGame.AddShot(1);
+            bowlingGame.AddShot(4);
+
+            bowlingGame.AddShot(4);
+            bowlingGame.AddShot(5);
+
+            bowlingGame.AddShot(6);
+            bowlingGame.AddShot(4);
+
+            bowlingGame.AddShot(5);
+            bowlingGame.AddShot(5);
+
+            bowlingGame.AddShot(10);
+
+            bowlingGame.AddShot(0);
+            bowlingGame.AddShot(1);
+
+            bowlingGame.AddShot(7);
+            bowlingGame.AddShot(3);
+
+            bowlingGame.AddShot(6);
+            bowlingGame.AddShot(4);
+
+            bowlingGame.AddShot(10);
+
+            bowlingGame.AddShot(2);
+            bowlingGame.AddShot(8);
+
+            bowlingGame.AddShot(6);
+
+            // Act
+            var totalPoints = bowlingGame.GetTotalPoints();
+
+            // Assert
+            totalPoints.Should().Be(133);
+        }
+
+        [Test]
+        public void FullGame_WhenRolling10Strikes_ShouldGive300Points()
+        {
+            // Arrange
+            var bowlingGame = BowlingGame.Create();
+            bowlingGame.AddShot(10);
+            bowlingGame.AddShot(10);
+            bowlingGame.AddShot(10);
+            bowlingGame.AddShot(10);
+            bowlingGame.AddShot(10);
+            bowlingGame.AddShot(10);
+            bowlingGame.AddShot(10);
+            bowlingGame.AddShot(10);
+            bowlingGame.AddShot(10);
+            bowlingGame.AddShot(10);
+            bowlingGame.AddShot(10);
+            bowlingGame.AddShot(10);
+
+            // Act
+            var totalPoints = bowlingGame.GetTotalPoints();
+
+            // Assert
+            totalPoints.Should().Be(300);
         }
     }
 }

@@ -14,9 +14,7 @@ namespace BowlingLibTests.UnitTests.Domain
         public void Points_WhenLessThan10PinsAreKnockedOver_ShouldReturnExpectedValue(int firstRoll, int secondRoll, int? expectedPoints)
         {
             // Arrange
-            var frame = Frame.Create();
-            var frames = GetNumberOfFrames(10);
-            frame.AddAllFrames(frames);
+            var frame = CreateFrameWithFullGameOfFrames();
 
             // Act
             frame.AddShot(firstRoll);
@@ -32,9 +30,7 @@ namespace BowlingLibTests.UnitTests.Domain
         public void Points_WhenRollingASpare_ShouldReturnExpectedValue(int firstRollForNextFrame, int? expectedPoints)
         {
             // Arrange
-            var frame = Frame.Create();
-            var frames = GetNumberOfFrames(10);
-            frame.AddAllFrames(frames);
+            var frame = CreateFrameWithFullGameOfFrames();
             frame.AddShot(8);
             frame.AddShot(2);
 
@@ -49,9 +45,7 @@ namespace BowlingLibTests.UnitTests.Domain
         public void Points_WhenRollingASpareAndNextFrameIsNotStarted_ShouldReturnNull()
         {
             // Arrange
-            var frame = Frame.Create();
-            var frames = GetNumberOfFrames(10);
-            frame.AddAllFrames(frames);
+            var frame = CreateFrameWithFullGameOfFrames();
             frame.AddShot(8);
             frame.AddShot(2);
 
@@ -68,9 +62,7 @@ namespace BowlingLibTests.UnitTests.Domain
         public void Points_WhenRollingAStrikeAndThenNotAStrike_ShouldReturnExpectedValue(int firstRollForNextFrame, int secondRollForNextFrame, int? expectedPoints)
         {
             // Arrange
-            var frame = Frame.Create();
-            var frames = GetNumberOfFrames(10);
-            frame.AddAllFrames(frames);
+            var frame = CreateFrameWithFullGameOfFrames();
             frame.AddShot(10);
 
             // Act
@@ -88,7 +80,7 @@ namespace BowlingLibTests.UnitTests.Domain
         public void Points_WhenRolling2Strikes_ShouldReturnExpectedValue(int firstRollForNextNextFrame, int secondRollForNextNextFrame, int? expectedPoints)
         {
             // Arrange
-            var frame = CreateFrameWith10Frames();
+            var frame = CreateFrameWithFullGameOfFrames();
             
             frame.AddShot(10);
             frame.NextFrame.AddShot(10);
@@ -105,7 +97,7 @@ namespace BowlingLibTests.UnitTests.Domain
         public void Points_WhenRolling3Strikes_ShouldReturn30Points()
         {
             // Arrange
-            var frame = CreateFrameWith10Frames();
+            var frame = CreateFrameWithFullGameOfFrames();
 
             frame.AddShot(10);
             frame.NextFrame.AddShot(10);
@@ -165,17 +157,19 @@ namespace BowlingLibTests.UnitTests.Domain
         }
 
         [Test]
-        public void AddAllFrames_WhenAdding10Frames_ShouldSucceed()
+        public void AddAllFrames_WhenAddingFullGameOfFrames_ShouldSucceed()
         {
             // Arrange
             var frame = Frame.Create();
             var tenFrames = GetNumberOfFrames(10);
+            tenFrames.Add(Frame.CreateBonusFrame());
+            tenFrames.Add(Frame.CreateBonusFrame());
 
             // Act
             frame.AddAllFrames(tenFrames);
 
             // Assert
-            frame.AllFrames.Count.Should().Be(10);
+            frame.AllFrames.Count.Should().Be(12);
         }
 
         [TestCase(-1)]
@@ -192,25 +186,27 @@ namespace BowlingLibTests.UnitTests.Domain
             Action act = () => frame.AddAllFrames(frames);
 
             // Assert
-            act.Should().Throw<InvalidOperationException>().WithMessage(ValidationRuleTextTemplates.FrameCountMustBe10RuleText);
+            act.Should().Throw<InvalidOperationException>().WithMessage(ValidationRuleTextTemplates.FrameCountMustBe12RuleText);
         }
 
         [Test]
         public void AddAllFrames_WhenAddingFramesTwice_ShouldThrow()
         {
             // Arrange
-            var frame = CreateFrameWith10Frames();
+            var frame = CreateFrameWithFullGameOfFrames();
 
             // Act
-            Action act = () => frame.AddAllFrames(GetNumberOfFrames(10));
+            Action act = () => frame.AddAllFrames(GetNumberOfFrames(12));
 
             // Assert
             act.Should().Throw<InvalidOperationException>().WithMessage(ValidationRuleTextTemplates.CanOnlyAddFramesOnceRuleText);
         }
 
-        private Frame CreateFrameWith10Frames()
+        private Frame CreateFrameWithFullGameOfFrames()
         {
             var frames = GetNumberOfFrames(10);
+            frames.Add(Frame.CreateBonusFrame());
+            frames.Add(Frame.CreateBonusFrame());
 
             foreach (var frame in frames)
             {
