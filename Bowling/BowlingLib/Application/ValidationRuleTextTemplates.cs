@@ -7,6 +7,7 @@
         public static string MaxPlayerNameLengthRuleText => "Max length of player name is 20";
         public static string NoPlayerNameAddedRuleText => "No player name added to the game.";
         public static string GameIsFinishedRuleText => "Game is finished";
+        public static string CanNotAddShotBeforeNameIsAddedRuleText => "Must add name before rolling";
 
         // Frame
         public static string ImpossibleNumberOfPinsKnockedOverRuleText => "Too many pins knocked over";

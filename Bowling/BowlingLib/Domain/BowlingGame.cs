@@ -31,16 +31,11 @@ namespace BowlingLib.Domain
             PlayerName = playerName;
         }
 
-        public string GetScoreBoard()
-        {
-            if (PlayerName == string.Empty)
-                throw new InvalidOperationException(ValidationRuleTextTemplates.NoPlayerNameAddedRuleText);
-
-            return $"{PlayerName}: 0";
-        }
-
         public void AddShot(int pinsKnockedOver)
         {
+            if (string.IsNullOrWhiteSpace(PlayerName))
+                throw new InvalidOperationException(ValidationRuleTextTemplates.CanNotAddShotBeforeNameIsAddedRuleText);
+
             var currentFrame = GetCurrentFrame();
             currentFrame.AddShot(pinsKnockedOver);
         }

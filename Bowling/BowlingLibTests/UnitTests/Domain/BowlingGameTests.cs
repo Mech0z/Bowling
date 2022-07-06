@@ -6,33 +6,6 @@ namespace BowlingLibTests.UnitTests.Domain
 {
     public class Tests
     {
-        [Test]
-        public void PrintScore_WhenCalledWithoutName_ShouldThrow()
-        {
-            // Arrange
-            var bowlingGame = BowlingGame.Create();
-
-            // Act
-            Action act = () => bowlingGame.GetScoreBoard();
-
-            // Assert
-            act.Should().Throw<InvalidOperationException>().WithMessage(ValidationRuleTextTemplates.NoPlayerNameAddedRuleText);
-        }
-
-        [Test]
-        public void PrintScore_When1PlayerIsAdded_ShouldEmptyScoreBoard()
-        {
-            // Arrange
-            var bowlingGame = BowlingGame.Create();
-            bowlingGame.AddPlayerName("Bob");
-
-            // Act
-            var result = bowlingGame.GetScoreBoard();
-
-            // Assert
-            result.Should().Be("Bob: 0");
-        }
-
         [TestCase("")]
         [TestCase(" ")]
         [TestCase(null)]
