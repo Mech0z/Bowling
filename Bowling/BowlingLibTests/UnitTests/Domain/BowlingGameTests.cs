@@ -39,6 +39,7 @@ namespace BowlingLibTests.UnitTests.Domain
         {
             // Arrange
             var bowlingGame = BowlingGame.Create();
+            bowlingGame.AddPlayerName("Mech0z");
             bowlingGame.AddShot(1);
             bowlingGame.AddShot(4);
 
@@ -81,6 +82,7 @@ namespace BowlingLibTests.UnitTests.Domain
         {
             // Arrange
             var bowlingGame = BowlingGame.Create();
+            bowlingGame.AddPlayerName("Mech0z");
             bowlingGame.AddShot(10);
             bowlingGame.AddShot(10);
             bowlingGame.AddShot(10);
