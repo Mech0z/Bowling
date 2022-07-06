@@ -77,6 +77,26 @@ namespace BowlingLib.Domain
             }
         }
 
+        public bool IsFinished => PinsKnockedOver.Count == 2 || IsStrike;
+
+        public bool IsStrike => PinsKnockedOver.Any() && PinsKnockedOver.First() == 10;
+
+        public bool IsSpare => PinsKnockedOver.Count == 2 && PinsKnockedOver.Sum() == 10;
+
+        public Frame NextFrame
+        {
+            get
+            {
+                if (SecondBonusFrameIndex)
+                    throw new InvalidOperationException(ValidationRuleTextTemplates.CantRequestNextFrameFromLastFrameRuleText);
+                return AllFrames[AllFrames.IndexOf(this) + 1];
+            }
+        }
+
+        private bool SecondBonusFrameIndex => AllFrames.IndexOf(this) == 11;
+
+        private int PinsLeft => 10 - PinsKnockedOver.Sum();
+
         private int? CalculatePointsForSpare()
         {
             if (NextFrame.PinsKnockedOver.Any())
@@ -99,26 +119,6 @@ namespace BowlingLib.Domain
                 return 10 + NextFrame.PinsKnockedOver.Sum();
 
             return null;
-        }
-
-        public bool IsFinished => PinsKnockedOver.Count == 2 || IsStrike;
-
-        private int PinsLeft => 10 - PinsKnockedOver.Sum();
-
-        public bool IsStrike => PinsKnockedOver.Any() && PinsKnockedOver.First() == 10;
-
-        public bool IsSpare => PinsKnockedOver.Count == 2 && PinsKnockedOver.Sum() == 10;
-        
-        private bool SecondBonusFrameIndex => AllFrames.IndexOf(this) == 11;
-
-        public Frame NextFrame
-        {
-            get
-            {
-                if (SecondBonusFrameIndex)
-                    throw new InvalidOperationException(ValidationRuleTextTemplates.CantRequestNextFrameFromLastFrameRuleText);
-                return AllFrames[AllFrames.IndexOf(this) + 1];
-            }
         }
     }
 }
